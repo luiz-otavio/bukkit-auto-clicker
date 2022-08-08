@@ -32,13 +32,13 @@ import me.luizotavio.minecraft.util.Blocks;
 import me.luizotavio.minecraft.util.Multipliers;
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -109,10 +109,10 @@ public class ClickPlayer {
 
         final double damage = Multipliers.getCurrentDamage(player);
 
-        Vector vector = player.getLocation()
-            .toVector();
-
+        Location vector = player.getLocation();
         World world = player.getWorld();
+
+        int y = vector.getBlockY();
 
         for (Entity entity : entities) {
             if (!(entity instanceof LivingEntity)) {
@@ -123,24 +123,26 @@ public class ClickPlayer {
                 continue;
             }
 
-            Vector entityVector = entity.getLocation()
-                .toVector();
+            Location entityVector = entity.getLocation();
 
-            int y = entityVector.getBlockY();
+            int maxX = Math.max(vector.getBlockX(), entityVector.getBlockX()),
+                maxZ = Math.max(vector.getBlockZ(), entityVector.getBlockZ()),
+                minX = Math.min(vector.getBlockX(), entityVector.getBlockX()),
+                minZ = Math.min(vector.getBlockZ(), entityVector.getBlockZ());
 
             boolean hasBlock = false;
 
             // Check if there is a block between the player and the entity.
-            for (int x = entityVector.getBlockX(); x <= vector.getBlockX(); x++) {
-                for (int z = entityVector.getBlockZ(); z <= vector.getBlockZ(); z++) {
-                    if (Blocks.existsBlocksAt(world, x, y, z) || Blocks.existsBlocksAt(world, x, y + 1, z)) {
+            for (int x = minX; x <= maxX; x++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    if (Blocks.existsBlocksAt(world, x, y, z ) || Blocks.existsBlocksAt(world, x, y + 1, z)) {
                         hasBlock = true;
                         break;
                     }
                 }
             }
 
-            if (!hasBlock) {
+            if (hasBlock) {
                 continue;
             }
 

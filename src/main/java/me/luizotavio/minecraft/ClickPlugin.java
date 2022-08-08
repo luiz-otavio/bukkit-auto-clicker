@@ -49,7 +49,9 @@ public class ClickPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        clickController = new ClickController();
+        if (clickController != null) {
+            clickController = new ClickController();
+        }
 
         getServer().getPluginManager().registerEvents(new BukkitClickHandler(clickController), this);
 
@@ -72,8 +74,6 @@ public class ClickPlugin extends JavaPlugin {
 
         getServer().getScheduler()
             .cancelTasks(this);
-
-        clickController.clear();
     }
 
     public ClickController getClickController() {

@@ -25,9 +25,10 @@
 package me.luizotavio.minecraft.util;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.Material;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftMagicNumbers;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -45,9 +46,12 @@ public class Blocks {
      * @return True if there is a block at the given position.
      */
     public static boolean existsBlocksAt(@NotNull World world, int x, int y, int z) {
-        return ((CraftWorld) world).getHandle().getType(new BlockPosition(x, y, z))
-            .getBlock()
-            .getMaterial() != Material.AIR;
+        Material bukkitMaterial = CraftMagicNumbers.getMaterial(
+            ((CraftWorld) world).getHandle().getType(new BlockPosition(x, y, z))
+                .getBlock()
+        );
+
+        return bukkitMaterial != Material.AIR && bukkitMaterial.isSolid() && bukkitMaterial.isBlock();
     }
 
 }
