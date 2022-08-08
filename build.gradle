@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group project_groupId
@@ -12,8 +13,31 @@ repositories {
         name = 'elmakers'
         url = 'https://maven.elmakers.com/repository/'
     }
+
+    maven {
+        name = 'jitpack'
+        url = 'https://jitpack.io'
+    }
 }
 
 dependencies {
     compileOnly('org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT')
+
+    implementation(
+        'org.jetbrains:annotations:16.0.2',
+        'com.github.DevNatan.inventory-framework:inventory-framework:2.5.3'
+    )
+}
+
+// Process versions placeholders
+processResources {
+    def props = [version: version]
+
+    inputs.properties props
+
+    filteringCharset 'UTF-8'
+
+    filesMatching("*.yml") {
+        expand props
+    }
 }
