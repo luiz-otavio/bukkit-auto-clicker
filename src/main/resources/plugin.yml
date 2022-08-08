@@ -1,0 +1,5 @@
+name: WisplyClicks
+version: '${version}'
+main: me.luizotavio.minecraft.ClickPlugin
+author: Wizard
+load: POSTWORLD

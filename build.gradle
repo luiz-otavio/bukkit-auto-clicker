@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group project_groupId
+version project_version
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = 'elmakers'
+        url = 'https://maven.elmakers.com/repository/'
+    }
+}
+
+dependencies {
+    compileOnly('org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT')
+}
