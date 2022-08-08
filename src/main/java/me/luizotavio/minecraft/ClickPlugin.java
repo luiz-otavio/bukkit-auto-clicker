@@ -69,6 +69,11 @@ public class ClickPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
+
+        getServer().getScheduler()
+            .cancelTasks(this);
+
+        clickController.clear();
     }
 
     public ClickController getClickController() {

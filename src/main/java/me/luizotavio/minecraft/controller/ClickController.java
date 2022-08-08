@@ -63,4 +63,8 @@ public class ClickController {
 
         return Collections.unmodifiableList(clickPlayers);
     }
+
+    public void clear() {
+        clickMap.clear();
+    }
 }
