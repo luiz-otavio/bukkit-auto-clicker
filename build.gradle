@@ -25,7 +25,8 @@ dependencies {
 
     implementation(
         'org.jetbrains:annotations:16.0.2',
-        'com.github.DevNatan.inventory-framework:inventory-framework:2.5.3'
+        'com.github.DevNatan.inventory-framework:inventory-framework:2.5.3',
+        'com.github.SaiintBrisson.command-framework:bukkit:1.3.0'
     )
 }
 
@@ -41,3 +42,6 @@ processResources {
         expand props
     }
 }
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
