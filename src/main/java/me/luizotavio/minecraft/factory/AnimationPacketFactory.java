@@ -59,7 +59,7 @@ public class AnimationPacketFactory {
      * @param radius The radius to check.
      */
     public static void notifyNearby(Packet<?> packet, Entity entity, int radius) {
-        for (Entity player : Nearby.getNearbyEntities(entity, radius, EntityType.PLAYER)) {
+        for (Entity player : Nearby.getNearbyEntities(entity, radius, radius, radius, EntityType.PLAYER)) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
         }
     }

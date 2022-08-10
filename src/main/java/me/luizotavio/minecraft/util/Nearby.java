@@ -40,12 +40,12 @@ import java.util.List;
  */
 public class Nearby {
 
-    public static <T extends Entity> List<T> getNearbyEntities(Entity from, int radius, @Nullable EntityType entityType) {
+    public static <T extends Entity> List<T> getNearbyEntities(Entity from, int x, int y, int z, @Nullable EntityType entityType) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) from).getHandle();
 
         List<net.minecraft.server.v1_8_R3.Entity> entities = nmsEntity.world.a(
             nmsEntity,
-            nmsEntity.getBoundingBox().grow(radius, radius, radius),
+            nmsEntity.getBoundingBox().grow(x, y, z),
             target -> entityType == null ? target instanceof EntityLiving : target.getBukkitEntity().getType() == entityType
         );
 

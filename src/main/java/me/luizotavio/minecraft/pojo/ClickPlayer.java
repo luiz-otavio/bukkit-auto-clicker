@@ -98,7 +98,7 @@ public class ClickPlayer {
             return;
         }
 
-        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, null);
+        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, 0, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS,null);
 
         if (entities.isEmpty()) {
             return;
@@ -118,6 +118,10 @@ public class ClickPlayer {
 
             Location entityVector = entity.getLocation();
 
+            if (entityVector.getBlockY() != y) {
+                continue;
+            }
+
             int maxX = Math.max(vector.getBlockX(), entityVector.getBlockX()),
                 maxZ = Math.max(vector.getBlockZ(), entityVector.getBlockZ()),
                 minX = Math.min(vector.getBlockX(), entityVector.getBlockX()),
@@ -128,7 +132,7 @@ public class ClickPlayer {
             // Check if there is a block between the player and the entity.
             for (int x = minX; x <= maxX; x++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    if (Blocks.existsBlocksAt(world, x, y, z ) || Blocks.existsBlocksAt(world, x, y + 1, z)) {
+                    if (Blocks.existsBlocksAt(world, x, y + 1, z)) {
                         hasBlock = true;
                         break;
                     }
