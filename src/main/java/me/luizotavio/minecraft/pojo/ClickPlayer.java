@@ -159,18 +159,21 @@ public class ClickPlayer {
                 continue;
             }
 
-            ((LivingEntity) entity).damage(damage);
+            LivingEntity livingEntity = (LivingEntity) entity;
 
             PlayerPerformsClickEvent clickEvent = new PlayerPerformsClickEvent(
                 player,
                 this,
-                (LivingEntity) entity,
+                livingEntity,
                 event.getDamage()
             ).call();
 
             if (clickEvent.isCancelled()) {
                 continue;
             }
+
+            livingEntity.setLastDamageCause(event);
+            livingEntity.damage(damage);
         }
 
         PacketPlayOutAnimation packet = AnimationPacketFactory.createAnimation(player, 0);
