@@ -30,11 +30,11 @@ import me.luizotavio.minecraft.event.impl.PlayerPerformsClickEvent;
 import me.luizotavio.minecraft.factory.AnimationPacketFactory;
 import me.luizotavio.minecraft.util.Blocks;
 import me.luizotavio.minecraft.util.Multipliers;
+import me.luizotavio.minecraft.util.Nearby;
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -97,11 +97,7 @@ public class ClickPlayer {
             return;
         }
 
-        List<Entity> entities = player.getNearbyEntities(
-            ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS,
-            0,
-            ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS
-        );
+        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, LivingEntity.class);
 
         if (entities.isEmpty()) {
             return;
@@ -114,11 +110,7 @@ public class ClickPlayer {
 
         int y = vector.getBlockY();
 
-        for (Entity entity : entities) {
-            if (!(entity instanceof LivingEntity)) {
-                continue;
-            }
-
+        for (LivingEntity entity : entities) {
             if (entity.getType() == EntityType.PLAYER) {
                 continue;
             }
@@ -159,12 +151,10 @@ public class ClickPlayer {
                 continue;
             }
 
-            LivingEntity livingEntity = (LivingEntity) entity;
-
             PlayerPerformsClickEvent clickEvent = new PlayerPerformsClickEvent(
                 player,
                 this,
-                livingEntity,
+                entity,
                 event.getDamage()
             ).call();
 
@@ -172,8 +162,8 @@ public class ClickPlayer {
                 continue;
             }
 
-            livingEntity.setLastDamageCause(event);
-            livingEntity.damage(damage);
+            entity.setLastDamageCause(event);
+            entity.damage(damage);
         }
 
         PacketPlayOutAnimation packet = AnimationPacketFactory.createAnimation(player, 0);
