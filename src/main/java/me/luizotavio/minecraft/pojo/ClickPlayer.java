@@ -98,7 +98,7 @@ public class ClickPlayer {
             return;
         }
 
-        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, LivingEntity.class);
+        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, null);
 
         if (entities.isEmpty()) {
             return;

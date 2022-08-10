@@ -25,10 +25,11 @@
 package me.luizotavio.minecraft.util;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.EntityLiving;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +40,13 @@ import java.util.List;
  */
 public class Nearby {
 
-    public static <T extends Entity> List<T> getNearbyEntities(Entity from, int radius, Class<T> clazz) {
+    public static <T extends Entity> List<T> getNearbyEntities(Entity from, int radius, @Nullable EntityType entityType) {
         net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) from).getHandle();
 
         List<net.minecraft.server.v1_8_R3.Entity> entities = nmsEntity.world.a(
             nmsEntity,
             nmsEntity.getBoundingBox().grow(radius, radius, radius),
-            target -> target.getBukkitEntity().getClass().isAssignableFrom(clazz)
+            target -> entityType == null ? target instanceof EntityLiving : target.getBukkitEntity().getType() == entityType
         );
 
         if (entities.isEmpty()) {

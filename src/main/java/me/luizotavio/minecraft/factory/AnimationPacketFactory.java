@@ -30,7 +30,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
 
 /**
  * @author Luiz Otávio de Farias Corrêa
@@ -59,7 +59,7 @@ public class AnimationPacketFactory {
      * @param radius The radius to check.
      */
     public static void notifyNearby(Packet<?> packet, Entity entity, int radius) {
-        for (Player player : Nearby.getNearbyEntities(entity, radius, Player.class)) {
+        for (Entity player : Nearby.getNearbyEntities(entity, radius, EntityType.PLAYER)) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
         }
     }
