@@ -31,6 +31,7 @@ import me.luizotavio.minecraft.factory.AnimationPacketFactory;
 import me.luizotavio.minecraft.util.Blocks;
 import me.luizotavio.minecraft.util.Multipliers;
 import me.luizotavio.minecraft.util.Nearby;
+import me.luizotavio.minecraft.util.Paralellism;
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -163,7 +164,8 @@ public class ClickPlayer {
             }
 
             entity.setLastDamageCause(event);
-            entity.damage(damage);
+
+            Paralellism.callToSync(() -> entity.damage(damage, player));
         }
 
         PacketPlayOutAnimation packet = AnimationPacketFactory.createAnimation(player, 0);
