@@ -22,46 +22,39 @@
  * SOFTWARE.
  */
 
-package me.luizotavio.minecraft.factory;
+package me.luizotavio.minecraft.util;
 
-import me.luizotavio.minecraft.util.Nearby;
-import net.minecraft.server.v1_8_R3.Packet;
-import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
+import com.google.common.collect.Lists;
+import net.minecraft.server.v1_8_R3.EntityLiving;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Luiz Otávio de Farias Corrêa
- * @since 08/08/2022
+ * @since 10/08/2022
  */
-public class AnimationPacketFactory {
+public class Nearby {
 
-    /**
-     * Create an entire packet of animation with specific id and entity.
-     *
-     * @param entity The entity to send the packet.
-     * @param type   The animation type. [0 - swing arm, 1 - take damage]
-     * @return The packet.
-     */
-    public static PacketPlayOutAnimation createAnimation(Entity entity, int type) {
-        return new PacketPlayOutAnimation(
-            ((CraftEntity) entity).getHandle(),
-            type
+    public static <T extends Entity> List<T> getNearbyEntities(Entity from, int x, int y, int z, @Nullable EntityType entityType) {
+        net.minecraft.server.v1_8_R3.Entity nmsEntity = ((CraftEntity) from).getHandle();
+
+        List<net.minecraft.server.v1_8_R3.Entity> entities = nmsEntity.world.a(
+            nmsEntity,
+            nmsEntity.getBoundingBox().grow(x, y, z),
+            target -> entityType == null ? target instanceof EntityLiving : target.getBukkitEntity().getType() == entityType
+        );
+
+        if (entities.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return (List<T>) Collections.unmodifiableList(
+            Lists.transform(entities, entity -> entity.getBukkitEntity())
         );
     }
-
-    /**
-     * Notify all players in the world of the packet.
-     * @param packet The packet to send.
-     * @param entity The entity to check nearby players.
-     * @param radius The radius to check.
-     */
-    public static void notifyNearby(Packet<?> packet, Entity entity, int radius) {
-        for (Entity player : Nearby.getNearbyEntities(entity, radius, radius, radius, EntityType.PLAYER)) {
-            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-        }
-    }
-
 }

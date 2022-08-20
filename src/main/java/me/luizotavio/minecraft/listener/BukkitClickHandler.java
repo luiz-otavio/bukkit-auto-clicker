@@ -50,32 +50,32 @@ public class BukkitClickHandler implements Listener {
         this.clickController = clickController;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-
-        Location to = event.getTo(),
-            from = event.getFrom();
-        if (to.getBlockX() == from.getBlockX() && to.getBlockY() == from.getBlockY() && to.getBlockZ() == from.getBlockZ()) {
-            return;
-        }
-
-        ClickPlayer clickPlayer = clickController.get(player.getUniqueId());
-
-        if (clickPlayer == null) {
-            return;
-        }
-
-        if (clickPlayer.isClicking()) {
-            player.sendMessage(
-                translate("&cYou cannot move while you are clicking!")
-            );
-
-            event.setTo(from);
-
-            return;
-        }
-    }
+//    @EventHandler(priority = EventPriority.HIGHEST)
+//    public void onPlayerMove(PlayerMoveEvent event) {
+//        Player player = event.getPlayer();
+//
+//        Location to = event.getTo(),
+//            from = event.getFrom();
+//        if (to.getBlockX() == from.getBlockX() && to.getBlockY() == from.getBlockY() && to.getBlockZ() == from.getBlockZ()) {
+//            return;
+//        }
+//
+//        ClickPlayer clickPlayer = clickController.get(player.getUniqueId());
+//
+//        if (clickPlayer == null) {
+//            return;
+//        }
+//
+//        if (clickPlayer.isClicking()) {
+//            player.sendMessage(
+//                translate("&cYou cannot move while you are clicking!")
+//            );
+//
+//            event.setTo(from);
+//
+//            return;
+//        }
+//    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerJoin(PlayerJoinEvent event) {

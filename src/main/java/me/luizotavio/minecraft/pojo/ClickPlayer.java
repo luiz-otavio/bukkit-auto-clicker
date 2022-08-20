@@ -30,11 +30,12 @@ import me.luizotavio.minecraft.event.impl.PlayerPerformsClickEvent;
 import me.luizotavio.minecraft.factory.AnimationPacketFactory;
 import me.luizotavio.minecraft.util.Blocks;
 import me.luizotavio.minecraft.util.Multipliers;
+import me.luizotavio.minecraft.util.Nearby;
+import me.luizotavio.minecraft.util.Paralellism;
 import net.minecraft.server.v1_8_R3.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -97,11 +98,7 @@ public class ClickPlayer {
             return;
         }
 
-        List<Entity> entities = player.getNearbyEntities(
-            ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS,
-            0,
-            ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS
-        );
+        List<LivingEntity> entities = Nearby.getNearbyEntities(player, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS, 0, ClickPlugin.RADIUS_OF_DISTANCE_TO_PERFORMS,null);
 
         if (entities.isEmpty()) {
             return;
@@ -114,16 +111,16 @@ public class ClickPlayer {
 
         int y = vector.getBlockY();
 
-        for (Entity entity : entities) {
-            if (!(entity instanceof LivingEntity)) {
-                continue;
-            }
-
+        for (LivingEntity entity : entities) {
             if (entity.getType() == EntityType.PLAYER) {
                 continue;
             }
 
             Location entityVector = entity.getLocation();
+
+            if (entityVector.getBlockY() != y) {
+                continue;
+            }
 
             int maxX = Math.max(vector.getBlockX(), entityVector.getBlockX()),
                 maxZ = Math.max(vector.getBlockZ(), entityVector.getBlockZ()),
@@ -135,7 +132,7 @@ public class ClickPlayer {
             // Check if there is a block between the player and the entity.
             for (int x = minX; x <= maxX; x++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    if (Blocks.existsBlocksAt(world, x, y, z ) || Blocks.existsBlocksAt(world, x, y + 1, z)) {
+                    if (Blocks.existsBlocksAt(world, x, y + 1, z)) {
                         hasBlock = true;
                         break;
                     }
@@ -159,12 +156,10 @@ public class ClickPlayer {
                 continue;
             }
 
-            LivingEntity livingEntity = (LivingEntity) entity;
-
             PlayerPerformsClickEvent clickEvent = new PlayerPerformsClickEvent(
                 player,
                 this,
-                livingEntity,
+                entity,
                 event.getDamage()
             ).call();
 
@@ -172,8 +167,9 @@ public class ClickPlayer {
                 continue;
             }
 
-            livingEntity.setLastDamageCause(event);
-            livingEntity.damage(damage);
+            entity.setLastDamageCause(event);
+
+            Paralellism.callToSync(() -> entity.damage(damage, player));
         }
 
         PacketPlayOutAnimation packet = AnimationPacketFactory.createAnimation(player, 0);

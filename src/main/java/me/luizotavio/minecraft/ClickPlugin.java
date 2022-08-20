@@ -49,9 +49,7 @@ public class ClickPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (clickController != null) {
-            clickController = new ClickController();
-        }
+        clickController = new ClickController();
 
         getServer().getPluginManager().registerEvents(new BukkitClickHandler(clickController), this);
 
